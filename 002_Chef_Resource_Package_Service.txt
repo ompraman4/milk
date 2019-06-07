@@ -1,0 +1,267 @@
+
+ubuntu@ip-172-31-39-34:~$ ls
+chef
+ubuntu@ip-172-31-39-34:~$ ls chef/ -R
+chef/:
+cookbooks
+
+chef/cookbooks:
+admatic
+
+chef/cookbooks/admatic:
+recipes
+
+chef/cookbooks/admatic/recipes:
+default.rb  hello.rb
+ubuntu@ip-172-31-39-34:~$ cd chef/cookbooks/admatic/recipes
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ ls
+default.rb  hello.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ vi tempdata.rb
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cat tempdata.rb
+file '/tmp/something' do
+  owner 'root'
+  group 'root'
+  mode '0755'
+  action :create
+end
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ chef-solo -o 'recipe[admatic]'
+Starting Chef Client, version 12.3.0
+[2019-06-03T11:06:42+00:00] WARN: Run List override has been provided.
+[2019-06-03T11:06:42+00:00] WARN: Original Run List: []
+[2019-06-03T11:06:42+00:00] WARN: Overridden Run List: [recipe[admatic]]
+Compiling Cookbooks...
+Hello Admatic
+Converging 1 resources
+Recipe: admatic::default
+  * file[/tmp/hellogod.txt] action create (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 0/1 resources updated in 0.771317086 seconds
+
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cat tempdata.rb
+file '/tmp/something' do
+  owner 'root'
+  group 'root'
+  mode '0755'
+  action :create
+end
+
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo chef-solo -o 'recipe[admatic::tempdata]'
+Starting Chef Client, version 12.3.0
+[2019-06-03T11:09:10+00:00] WARN: Run List override has been provided.
+[2019-06-03T11:09:10+00:00] WARN: Original Run List: []
+[2019-06-03T11:09:10+00:00] WARN: Overridden Run List: [recipe[admatic::tempdata]]
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: admatic::tempdata
+  * file[/tmp/something] action create
+    - change mode from '0664' to '0755'
+    - change owner from 'ubuntu' to 'root'
+    - change group from 'ubuntu' to 'root'
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 1/1 resources updated in 0.787084945 seconds
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ netstat -nltp
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::22                   :::*                    LISTEN      -
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ vi apache.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cat apache.rb
+apt_package 'apache2' do
+  action :install
+end
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo chef-solo -o 'recipe[admatic::apache]'
+Starting Chef Client, version 12.3.0
+[2019-06-03T11:13:55+00:00] WARN: Run List override has been provided.
+[2019-06-03T11:13:55+00:00] WARN: Original Run List: []
+[2019-06-03T11:13:55+00:00] WARN: Overridden Run List: [recipe[admatic::apache]]
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: admatic::apache
+  * apt_package[apache2] action install
+    - install version 2.4.18-2ubuntu3.10 of package apache2
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 1/1 resources updated in 6.736282991 seconds
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ netstat -nltp
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::80                   :::*                    LISTEN      -
+tcp6       0      0 :::22                   :::*                    LISTEN      -
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ pwd
+/home/ubuntu/chef/cookbooks/admatic/recipes
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ ls
+apache.rb  default.rb  hello.rb  tempdata.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ ls -tr1
+default.rb
+hello.rb
+tempdata.rb
+apache.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ vi apache.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo chef-solo -o 'recipe[admatic::apache]'
+Starting Chef Client, version 12.3.0
+[2019-06-04T04:50:09+00:00] WARN: Run List override has been provided.
+[2019-06-04T04:50:09+00:00] WARN: Original Run List: []
+[2019-06-04T04:50:09+00:00] WARN: Overridden Run List: [recipe[admatic::apache]]
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: admatic::apache
+  * apt_package[apache2] action install (up to date)
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 0/1 resources updated in 0.826898914 seconds
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ telnet
+telnet> ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ vi telnetpurge.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cat telnetpurge.rb
+apt_package 'telnet' do
+  action :purge
+end
+
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo chef-solo -o 'recipe[admatic::telnetpurge]'
+Starting Chef Client, version 12.3.0
+[2019-06-04T04:51:53+00:00] WARN: Run List override has been provided.
+[2019-06-04T04:51:53+00:00] WARN: Original Run List: []
+[2019-06-04T04:51:53+00:00] WARN: Overridden Run List: [recipe[admatic::telnetpurge]]
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: admatic::telnetpurge
+  * apt_package[telnet] action purge
+    - purge  package telnet
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 1/1 resources updated in 2.258969493 seconds
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ telnet
+-bash: /usr/bin/telnet: No such file or directory
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ vi serivedemo.rb
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cat serivedemo.rb
+service 'apache2' do
+  action :stop
+end
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ netstat -nltp
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::80                   :::*                    LISTEN      -
+tcp6       0      0 :::22                   :::*                    LISTEN      -
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo service apache2 status
+● apache2.service - LSB: Apache2 web server
+   Loaded: loaded (/etc/init.d/apache2; bad; vendor preset: enabled)
+  Drop-In: /lib/systemd/system/apache2.service.d
+           └─apache2-systemd.conf
+   Active: active (running) since Mon 2019-06-03 11:13:59 UTC; 17h ago
+     Docs: man:systemd-sysv-generator(8)
+    Tasks: 55
+   Memory: 7.4M
+      CPU: 42.797s
+   CGroup: /system.slice/apache2.service
+           ├─8504 /usr/sbin/apache2 -k start
+           ├─8507 /usr/sbin/apache2 -k start
+           └─8508 /usr/sbin/apache2 -k start
+
+Jun 03 11:13:58 ip-172-31-39-34 systemd[1]: Starting LSB: Apache2 web server..
+Jun 03 11:13:58 ip-172-31-39-34 apache2[8479]:  * Starting Apache httpd web se
+Jun 03 11:13:59 ip-172-31-39-34 apache2[8479]:  *
+Jun 03 11:13:59 ip-172-31-39-34 systemd[1]: Started LSB: Apache2 web server.
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo chef-solo -o 'recipe[admatic::serivedemo]'
+Starting Chef Client, version 12.3.0
+[2019-06-04T04:55:11+00:00] WARN: Run List override has been provided.
+[2019-06-04T04:55:11+00:00] WARN: Original Run List: []
+[2019-06-04T04:55:11+00:00] WARN: Overridden Run List: [recipe[admatic::serivedemo]]
+Compiling Cookbooks...
+Converging 1 resources
+Recipe: admatic::serivedemo
+  * service[apache2] action stop
+    - stop service service[apache2]
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 1/1 resources updated in 2.297492431 seconds
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ netstat -nltp
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::22                   :::*                    LISTEN      -
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo service apache2 status
+● apache2.service - LSB: Apache2 web server
+   Loaded: loaded (/etc/init.d/apache2; bad; vendor preset: enabled)
+  Drop-In: /lib/systemd/system/apache2.service.d
+           └─apache2-systemd.conf
+   Active: inactive (dead) since Tue 2019-06-04 04:55:13 UTC; 21s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 16771 ExecStop=/etc/init.d/apache2 stop (code=exited, status=0/SUCC
+
+Jun 03 11:13:58 ip-172-31-39-34 systemd[1]: Starting LSB: Apache2 web server..
+Jun 03 11:13:58 ip-172-31-39-34 apache2[8479]:  * Starting Apache httpd web se
+Jun 03 11:13:59 ip-172-31-39-34 apache2[8479]:  *
+Jun 03 11:13:59 ip-172-31-39-34 systemd[1]: Started LSB: Apache2 web server.
+Jun 04 04:55:12 ip-172-31-39-34 systemd[1]: Stopping LSB: Apache2 web server..
+Jun 04 04:55:12 ip-172-31-39-34 apache2[16771]:  * Stopping Apache httpd web s
+Jun 04 04:55:13 ip-172-31-39-34 apache2[16771]:  *
+Jun 04 04:55:13 ip-172-31-39-34 systemd[1]: Stopped LSB: Apache2 web server.
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo service apache2 start
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ sudo service apache2 status
+● apache2.service - LSB: Apache2 web server
+   Loaded: loaded (/etc/init.d/apache2; bad; vendor preset: enabled)
+  Drop-In: /lib/systemd/system/apache2.service.d
+           └─apache2-systemd.conf
+   Active: active (running) since Tue 2019-06-04 04:56:38 UTC; 3s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 16771 ExecStop=/etc/init.d/apache2 stop (code=exited, status=0/SUCC
+  Process: 16834 ExecStart=/etc/init.d/apache2 start (code=exited, status=0/SU
+    Tasks: 55
+   Memory: 6.3M
+      CPU: 54ms
+   CGroup: /system.slice/apache2.service
+           ├─16852 /usr/sbin/apache2 -k start
+           ├─16855 /usr/sbin/apache2 -k start
+           └─16856 /usr/sbin/apache2 -k start
+
+Jun 04 04:56:37 ip-172-31-39-34 systemd[1]: Starting LSB: Apache2 web server..
+Jun 04 04:56:37 ip-172-31-39-34 apache2[16834]:  * Starting Apache httpd web s
+Jun 04 04:56:38 ip-172-31-39-34 apache2[16834]:  *
+Jun 04 04:56:38 ip-172-31-39-34 systemd[1]: Started LSB: Apache2 web server.
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ curl icanhazip.com
+3.94.130.99
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ ls /var/www/html/
+index.html
+ubuntu@ip-172-31-39-34:~/chef/cookbooks/admatic/recipes$ cd /var/www/html/
+ubuntu@ip-172-31-39-34:/var/www/html$ ls
+index.html
+ubuntu@ip-172-31-39-34:/var/www/html$ sudo echo Hello IBM
+Hello IBM
+ubuntu@ip-172-31-39-34:/var/www/html$ sudo echo Hello IBM > index.html
+-bash: index.html: Permission denied
+ubuntu@ip-172-31-39-34:/var/www/html$ sudo su
+root@ip-172-31-39-34:/var/www/html# sudo echo Hello IBM > index.html
+root@ip-172-31-39-34:/var/www/html# exit
+ubuntu@ip-172-31-39-34:/var/www/html$
+
